@@ -8,9 +8,11 @@ public class Monte {
 		
 		BigDecimal total = BigDecimal.ZERO, inside = BigDecimal.ZERO;
 		
+		BigDecimal goal = new BigDecimal("10000000"); // Number of points
+		
 		RadiusService radius = (x, y) -> {return Math.sqrt(x*x+y*y);};		
 		
-		while (total.compareTo(new BigDecimal("1300000")) < 0) {
+		while (total.compareTo(goal) < 0) {
 			double r = radius.getRadius(Math.random(), Math.random());
 			if (r <= 1) {
 				inside = inside.add(BigDecimal.ONE);
