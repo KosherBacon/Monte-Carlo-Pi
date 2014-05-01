@@ -6,20 +6,18 @@ public class Monte {
 
 	public static void main(String[] args) {
 		
-		BigDecimal total = BigDecimal.ZERO, inside = BigDecimal.ZERO;
-		
-		BigDecimal goal = new BigDecimal("10000000"); // Number of points
+		BigDecimal t = BigDecimal.ZERO, i = BigDecimal.ZERO, g = new BigDecimal("10000000"); // Number of points
 		
 		RadiusService radius = (x, y) -> {return Math.sqrt(x*x+y*y);};		
 		
-		while (total.compareTo(goal) < 0) {
+		while (t.compareTo(g) < 0) {
 			double r = radius.getRadius(Math.random(), Math.random());
 			if (r <= 1) {
-				inside = inside.add(BigDecimal.ONE);
+				i = i.add(BigDecimal.ONE);
 			}
-			total = total.add(BigDecimal.ONE);
+			t = t.add(BigDecimal.ONE);
 		}
-		System.out.println(inside.multiply(new BigDecimal("4")).divide(total, 50, RoundingMode.HALF_UP));
+		System.out.println(i.multiply(new BigDecimal("4")).divide(t, 50, RoundingMode.HALF_UP));
 	}
 	
 	interface RadiusService {
