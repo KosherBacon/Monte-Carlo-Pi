@@ -9,16 +9,18 @@ import java.util.concurrent.TimeUnit;
 public class Monte {
 
 	public static void main(String[] args) {
-		
-		BigDecimal t = BigDecimal.ZERO, i = BigDecimal.ZERO, g = new BigDecimal("10000000"); // Number of points
-		
+				
 		RadiusService radius = (x, y) -> {return Math.sqrt(x*x+y*y);};		
+		
+		BigDecimal four = new BigDecimal("4");
 		
 		int cpus = Runtime.getRuntime().availableProcessors();
 		int maxThreads = cpus * 1;
 		maxThreads = (maxThreads > 0 ? maxThreads : 1);
 		
 		boolean running = true;
+		
+		InOther io = new InOther();
 		
 		ExecutorService executorService =
 				new ThreadPoolExecutor(
@@ -33,23 +35,46 @@ public class Monte {
 			@Override
 			public void run() {
 				while (running) {
-					
+					double r = radius.getRadius(Math.random(), Math.random());
+					if (r <= 1) {
+						io.in++;
+					}
+					io.other++;
 				}
 			}
 		};
 		
-		while (t.compareTo(g) < 0) {
-			double r = radius.getRadius(Math.random(), Math.random());
-			if (r <= 1) {
-				i = i.add(BigDecimal.ONE);
+		executorService.submit(calc);
+		
+		Runnable printer = new Runnable() {
+			@Override
+			public void run() {
+				while (running) {
+					System.out.print(four.multiply(new BigDecimal(io.in)).divide(new BigDecimal(io.other), 20, RoundingMode.HALF_UP) + "\r");
+					try {
+						java.lang.Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			t = t.add(BigDecimal.ONE);
-		}
-		System.out.println(i.multiply(new BigDecimal("4")).divide(t, 50, RoundingMode.HALF_UP));
+		};
+		
+		executorService.submit(printer);
 	}
 	
 	interface RadiusService {
 		double getRadius(double a, double b);
 	}
+}
 
+class InOther {
+	
+	public long in = 0, other = 0;
+	
+	public void setValues(long in, long other) {
+		this.in = in;
+		this.other = other;
+	}
+	
 }
